@@ -1,11 +1,11 @@
 {
-    "name": "uWu - P2P Crypto Trading",
+    "name": "uWu - P2P Crypto Payments",
     "short_name": "uWu",
-    "description": "Decentralized P2P crypto trading with AI-powered matching",
+    "description": "Decentralized P2P fiat-to-crypto ramp. Pay any UPI QR with stablecoins.",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#0a0a0f",
-    "theme_color": "#7c3aed",
+    "theme_color": "#F0B90B",
     "orientation": "portrait-primary",
     "icons": [
         {
@@ -13,6 +13,18 @@
             "sizes": "any",
             "type": "image/svg+xml",
             "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
         }
     ],
     "categories": [
@@ -21,14 +33,19 @@
     ],
     "shortcuts": [
         {
-            "name": "Dashboard",
-            "url": "/dashboard",
-            "description": "Open trading dashboard"
+            "name": "Scan & Pay",
+            "url": "/scan",
+            "description": "Scan a UPI QR code and pay with USDC"
         },
         {
-            "name": "Trade",
-            "url": "/trade",
-            "description": "Start trading"
+            "name": "Dashboard",
+            "url": "/dashboard",
+            "description": "View your orders and balances"
+        },
+        {
+            "name": "Become LP",
+            "url": "/lp/register",
+            "description": "Register as a Liquidity Provider"
         }
     ]
 }
