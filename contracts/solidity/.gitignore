@@ -1,0 +1,14 @@
+# Environment
+.env
+.env.local
+
+# Dependencies
+node_modules/
+
+# Hardhat
+cache/
+artifacts/
+typechain-types/
+
+# macOS
+.DS_Store

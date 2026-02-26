@@ -1,0 +1,24 @@
+{
+    "name": "uwu-contracts",
+    "version": "1.0.0",
+    "description": "uWu P2P Platform Smart Contracts",
+    "scripts": {
+        "compile": "hardhat compile",
+        "test": "hardhat test",
+        "deploy": "hardhat run scripts/deploy_v5.js --network opbnbTestnet",
+        "deploy:mock-usdc": "hardhat run scripts/deploy_mock_usdc.js --network opbnbTestnet",
+        "deploy:opbnb": "hardhat run scripts/deploy_v5.js --network opbnbTestnet",
+        "deploy:opbnb-mainnet": "hardhat run scripts/deploy_v5.js --network opbnbMainnet",
+        "deploy:bsc": "hardhat run scripts/deploy_v5.js --network bscTestnet",
+        "verify": "hardhat verify"
+    },
+    "devDependencies": {
+        "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+        "@openzeppelin/contracts": "^5.0.0",
+        "hardhat": "^2.19.0",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "dotenv": "^17.2.3"
+    }
+}

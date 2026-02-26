@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+@theme {
+    /* Aave-inspired "DeFi" Palette */
+    --color-background: #030304; /* Very dark, almost pure black */
+    --color-foreground: #EAEAEC; /* Stark white-gray */
+
+    /* BNB Chain accent */
+    --color-brand: #F0B90B; /* BNB gold */
+    --color-brand-hover: #D4A50A; /* Darker gold (hover) */
+
+    /* Surface Colors - clean panels */
+    --color-surface: #0E0E12;
+    --color-surface-hover: #15151A;
+
+    /* Utilities */
+    --color-success: #34D399;
+    --color-params: #FBBF24;
+    --color-error: #FB7185;
+    --color-warning: #FBBF24;
+
+    /* Typography Utilities */
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #9CA3AF;
+    --color-border: #1F1F25;
+
+    /* Animations - Aave style is smooth and slow */
+    --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    --animate-ghost-flow: ghost-flow 8s ease-in-out infinite alternate;
+    --animate-gradient-x: gradient-x 15s ease infinite;
+    --animate-slide-up: slide-up 0.5s ease-out forwards;
+    --animate-scanline: scanline 8s linear infinite;
+
+    @keyframes ghost-flow {
+        0% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.5;
+        }
+
+        100% {
+            transform: translate(20px, -20px) scale(1.1);
+            opacity: 0.8;
+        }
+    }
+
+    @keyframes gradient-x {
+
+        0%,
+        100% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    @keyframes slide-up {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes scanline {
+        0% {
+            transform: translateY(-100%);
+        }
+
+        100% {
+            transform: translateY(100%);
+        }
+    }
+}
+
+/* Base Styles */
+body {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: var(--font-mono), monospace;
+}
+
+/* Grid Background */
+.bg-grid {
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+/* Scanline Effect */
+.scanline {
+    position: relative;
+    overflow: hidden;
+}
+
+.scanline::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+    background-size: 100% 4px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Ghost Blob */
+.ghost-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    will-change: transform, opacity;
+    z-index: 0;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+    background: rgba(18, 18, 18, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
