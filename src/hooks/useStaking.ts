@@ -467,9 +467,14 @@ export function useStaking() {
             await fetchStakeProfile()
             
             return true
-        } catch (err) {
-            console.error('[Staking] Deposit failed:', err)
-            setError(err as Error)
+        } catch (err: unknown) {
+            const msg = err instanceof Error
+                ? err.message
+                : typeof (err as { message?: string })?.message === 'string'
+                    ? (err as { message: string }).message
+                    : JSON.stringify(err)
+            console.error('[Staking] Deposit failed:', msg)
+            setError(new Error(msg))
             return false
         } finally {
             setIsLoading(false)
@@ -537,10 +542,13 @@ export function useStaking() {
         return orderAmountUsdc * (basePercentage / 100) * multipliers[riskLevel]
     }, [])
 
+    const clearError = useCallback(() => setError(null), [])
+
     return {
         stakeProfile,
         isLoading,
         error,
+        clearError,
         fetchStakeProfile,
         depositStake,
         withdrawStake,

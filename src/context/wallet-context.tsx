@@ -107,10 +107,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
         const timer = setTimeout(() => {
             reconnectGraceExpired.current = true
-            // If still not connected after grace period, stop loading
             setState(prev => {
                 if (!prev.isConnected && prev.isLoading) {
-                    console.log('[Wallet] Reconnect grace period expired, still not connected')
+                    if (process.env.NODE_ENV === 'development') {
+                        console.debug('[Wallet] Reconnect grace period expired')
+                    }
                     return { ...prev, isLoading: false }
                 }
                 return prev
@@ -182,7 +183,6 @@ export function WalletProvider({ children }: { children: ReactNode }) {
                 setState(prev => ({ ...prev, balance, isBalanceLoading: false }))
             })
         } else {
-            console.log('[Wallet] Not connected')
             setState(prev => ({
                 ...prev,
                 address: null,

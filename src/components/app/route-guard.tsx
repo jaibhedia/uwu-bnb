@@ -60,6 +60,10 @@ export function RouteGuard({ children }: RouteGuardProps) {
     const [showTimeoutWarning, setShowTimeoutWarning] = useState(false)
 
     const isLP = stakeProfile?.isLP ?? false
+    const hasMinStake = (stakeProfile?.baseStake ?? 0) >= 50
+    const refetchedForLPCheck = useRef(false)
+    const fetchStakeProfileRef = useRef(fetchStakeProfile)
+    fetchStakeProfileRef.current = fetchStakeProfile
 
     // Public routes are always authorized immediately
     const isPublicRoute = PUBLIC_ROUTES.includes(pathname)
@@ -183,13 +187,26 @@ export function RouteGuard({ children }: RouteGuardProps) {
                     setIsChecking(true)
                     return
                 }
-                if (!isLP) {
+                // Treat as LP if they have min stake (avoids redirect loop after just staking:
+                // register page updates its own useStaking state but RouteGuard has separate state)
+                const considerLP = isLP || hasMinStake
+                if (!considerLP) {
+                    // Refetch once before redirecting - user may have just staked on register page
+                    if (!refetchedForLPCheck.current) {
+                        refetchedForLPCheck.current = true
+                        fetchStakeProfileRef.current?.().finally(() => {
+                            refetchedForLPCheck.current = false
+                        })
+                        setIsChecking(true)
+                        return
+                    }
                     console.log("[RouteGuard] Non-LP trying to access LP route")
                     router.replace("/lp/register")
                     setIsAuthorized(false)
                     setIsChecking(false)
                     return
                 }
+                refetchedForLPCheck.current = false
             }
 
             // All checks passed - authorized
@@ -218,7 +235,7 @@ export function RouteGuard({ children }: RouteGuardProps) {
         router.replace("/")
         setIsAuthorized(false)
         setIsChecking(false)
-    }, [pathname, isConnected, walletLoading, stakeLoading, isLP, isPublicRoute, router])
+    }, [pathname, isConnected, walletLoading, stakeLoading, isLP, hasMinStake, isPublicRoute, router])
 
     // Prevent browser back button from going to unauthorized routes
     useEffect(() => {

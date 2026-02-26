@@ -42,7 +42,9 @@ export default function LPRegisterPage() {
         stakeProfile, 
         isLoading: stakeLoading, 
         depositStake, 
-        fetchStakeProfile 
+        fetchStakeProfile,
+        error: stakeError,
+        clearError: clearStakeError 
     } = useStaking()
     const { trustData, canBecomeLp } = useTrustScore()
 
@@ -421,7 +423,7 @@ export default function LPRegisterPage() {
                                                     type="number"
                                                     placeholder={`Min ${Math.max(MIN_LP_STAKE - currentStake, 0)}`}
                                                     value={stakeAmount}
-                                                    onChange={(e) => setStakeAmount(e.target.value)}
+                                                    onChange={(e) => { setStakeAmount(e.target.value); clearStakeError(); }}
                                                     className="flex-1"
                                                 />
                                                 <button
@@ -448,10 +450,35 @@ export default function LPRegisterPage() {
                                             </div>
                                         </div>
 
+                                        {stakeError && (
+                                            <div className="p-3 rounded-lg bg-error/10 border border-error/30 text-error text-sm mb-3 space-y-2">
+                                                {stakeError.message.toLowerCase().includes('insufficient funds for gas') || stakeError.message.includes('balance 0') ? (
+                                                    <>
+                                                        <p className="font-medium">You need BNB for gas.</p>
+                                                        <p className="text-text-secondary text-xs">
+                                                            Your wallet has USDC but no BNB. On opBNB, gas is paid in BNB. Get testnet BNB from a faucet, then try again.
+                                                        </p>
+                                                        <a
+                                                            href="https://faucets.chain.link/opbnb-testnet"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-block mt-2 px-3 py-1.5 bg-brand/20 text-brand border border-brand/40 rounded text-xs font-medium hover:bg-brand/30"
+                                                        >
+                                                            Get opBNB Testnet BNB →
+                                                        </a>
+                                                        <p className="text-[10px] text-text-secondary mt-2 border-t border-white/10 pt-2">
+                                                            {stakeError.message}
+                                                        </p>
+                                                    </>
+                                                ) : (
+                                                    stakeError.message
+                                                )}
+                                            </div>
+                                        )}
                                         <button
                                             onClick={handleDeposit}
                                             disabled={isDepositing || !stakeAmount || parseFloat(stakeAmount) <= 0}
-                                            className="w-full py-3 bg-brand text-white rounded-lg font-bold disabled:opacity-50 flex items-center justify-center gap-2"
+                                            className="w-full py-3 bg-brand text-black rounded-lg font-bold disabled:opacity-50 flex items-center justify-center gap-2"
                                         >
                                             {isDepositing ? (
                                                 <>

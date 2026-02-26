@@ -20,25 +20,8 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   turbopack: {},
 
-  // Fix Cross-Origin-Opener-Policy warnings from wallet popups
-  // and suppress SES lockdown intrinsics noise
-  async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: [
-          {
-            key: "Cross-Origin-Opener-Policy",
-            value: "same-origin-allow-popups",
-          },
-          {
-            key: "Cross-Origin-Embedder-Policy",
-            value: "credentialless",
-          },
-        ],
-      },
-    ];
-  },
+  // COOP/COEP removed: strict policies blocked wallet popups (window.close / window.closed),
+  // causing "Cross-Origin-Opener-Policy policy would block" and broken connect/sign flows.
 };
 
 export default withPWA(nextConfig);

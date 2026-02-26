@@ -276,20 +276,23 @@ export default function ValidatorDashboard() {
                 {isConnected && !isGoldPlus && (
                     <div className="bg-surface border border-border p-8 text-center">
                         <Award className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
-                        <h2 className="text-xl font-bold text-text-primary mb-2">Gold+ Required</h2>
+                        <h2 className="text-xl font-bold text-text-primary mb-2">Validator dashboard — Gold+ required</h2>
                         <p className="text-text-secondary mb-2">
-                            Validators must stake &ge;$500 USDC (Gold tier) to participate.
+                            This is where validators vote on payment proofs (approve/flag). It is separate from Scan &amp; Pay.
+                        </p>
+                        <p className="text-text-secondary mb-2">
+                            Stake &ge;$500 USDC (Gold tier) to become a validator and earn $0.05 per review.
                         </p>
                         <p className="text-text-secondary text-sm mb-6">
-                            Your current tier: <span className="text-brand font-bold">{stakeProfile?.tier || 'None'}</span>
+                            Your tier: <span className="text-brand font-bold">{stakeProfile?.tier || 'None'}</span>
                             {stakeProfile?.baseStake ? ` ($${stakeProfile.baseStake.toFixed(0)} staked)` : ''}
                         </p>
                         <Link
                             href="/stake"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-brand text-white font-medium hover:bg-brand/90 transition-colors"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-brand text-black font-medium hover:bg-brand/90 transition-colors"
                         >
                             <Coins className="w-5 h-5" />
-                            Stake to Gold
+                            Stake to become validator
                             <ArrowRight className="w-4 h-4" />
                         </Link>
                     </div>
@@ -298,6 +301,9 @@ export default function ValidatorDashboard() {
                 {/* Validator Dashboard */}
                 {isConnected && isGoldPlus && (
                     <>
+                        <p className="text-text-secondary text-sm mb-4">
+                            Vote Approve or Flag on each payment proof. Majority wins; you earn $0.05 USDC per review. This is not Scan &amp; Pay — use the Scan tab for that.
+                        </p>
                         {/* Tabs */}
                         <div className="flex gap-2 mb-6">
                             <button

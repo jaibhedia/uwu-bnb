@@ -37,11 +37,11 @@ export function Footer() {
                 <div>
                     <h4 className="font-bold text-white mb-6">Resources</h4>
                     <ul className="space-y-4 text-gray-400 text-sm">
+                        <li><Link href="/contracts" className="hover:text-white">Contracts & Fee collector</Link></li>
                         <li><Link href="#" className="hover:text-white">Blog</Link></li>
                         <li><Link href="#" className="hover:text-white">Brand</Link></li>
                         <li><Link href="#" className="hover:text-white">FAQ</Link></li>
-                        <li><Link href="#" className="hover:text-white">Case Studies</Link></li>
-                        <li><Link href="#" className="hover:text-white">Help & Support</Link></li>
+                        <li><Link href="/grievance" className="hover:text-white">Help & Support</Link></li>
                     </ul>
                 </div>
 

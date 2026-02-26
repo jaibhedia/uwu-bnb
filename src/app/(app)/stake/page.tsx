@@ -177,6 +177,17 @@ export default function StakePage() {
                         </div>
                     </div>
 
+                    {/* Validator CTA for Gold+ */}
+                    {(currentTier === 'Gold' || currentTier === 'Diamond') && (
+                        <Link
+                            href="/dao"
+                            className="mt-4 flex items-center justify-center gap-2 py-3 rounded-lg bg-white/20 hover:bg-white/30 text-white font-medium text-sm transition-colors"
+                        >
+                            <Shield className="w-4 h-4" />
+                            Open Validator (DAO) dashboard
+                        </Link>
+                    )}
+
                     {/* Progress to next tier */}
                     {stakeProfile?.nextTier && (
                         <div className="mt-6">

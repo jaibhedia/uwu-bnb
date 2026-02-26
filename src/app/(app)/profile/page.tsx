@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import {
     ChevronLeft, User, Shield, TrendingUp, Award, Clock,
     CheckCircle, XCircle, AlertTriangle, Copy, ExternalLink,
-    Star, Coins, History, AtSign, Loader2, Check, LogOut
+    Star, Coins, History, AtSign, Loader2, Check, LogOut, Wallet
 } from "lucide-react"
 import { useWallet } from "@/hooks/useWallet"
 import { useStaking, TIER_CONFIG, type Tier } from "@/hooks/useStaking"
@@ -291,6 +291,13 @@ export default function ProfilePage() {
                 >
                     <Award className="w-6 h-6 text-brand mx-auto mb-2" />
                     <div className="text-sm font-medium text-text-primary">Validate</div>
+                </Link>
+                <Link
+                    href="/contracts"
+                    className="col-span-2 bg-surface border border-border p-4 text-center hover:border-brand/50 transition-colors flex items-center justify-center gap-2"
+                >
+                    <Wallet className="w-5 h-5 text-brand" />
+                    <div className="text-sm font-medium text-text-primary">Contracts & Fee collector</div>
                 </Link>
             </div>
 
