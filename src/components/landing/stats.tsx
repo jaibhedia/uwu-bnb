@@ -28,20 +28,20 @@ export function Stats() {
 
                     <div className="space-y-6">
                         <div>
-                            <p className="text-sm text-[#a3a3a3] mb-1">Total Market Size</p>
-                            <p className="text-4xl font-black text-white">$<CountUp end={420.69} decimals={2} duration={2} />M</p>
+                            <p className="text-sm text-[#a3a3a3] mb-1">P2P Volume (Testnet)</p>
+                            <p className="text-4xl font-black text-white">$<CountUp end={12.5} decimals={1} duration={2} />K</p>
                         </div>
 
                         <div className="h-px bg-white/10" />
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <p className="text-xs text-[#a3a3a3] mb-1">Total Borrows</p>
-                                <p className="text-xl font-bold text-white">$<CountUp end={142.5} decimals={1} duration={2} />M</p>
+                                <p className="text-xs text-[#a3a3a3] mb-1">Active LPs</p>
+                                <p className="text-xl font-bold text-white"><CountUp end={24} duration={2} /></p>
                             </div>
                             <div>
-                                <p className="text-xs text-[#a3a3a3] mb-1">Total Supply</p>
-                                <p className="text-xl font-bold text-white">$<CountUp end={892.1} decimals={1} duration={2} />M</p>
+                                <p className="text-xs text-[#a3a3a3] mb-1">Total Staked</p>
+                                <p className="text-xl font-bold text-white">$<CountUp end={8.2} decimals={1} duration={2} />K</p>
                             </div>
                         </div>
                     </div>

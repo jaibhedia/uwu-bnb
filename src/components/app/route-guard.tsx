@@ -15,7 +15,7 @@ import { Loader2, Shield, AlertTriangle } from "lucide-react"
  */
 
 // Public routes that don't require auth
-const PUBLIC_ROUTES = ["/", "/onboarding"]
+const PUBLIC_ROUTES = ["/", "/onboarding", "/dao", "/lp/register"]
 
 // LP-only routes (excluding register which anyone can access)
 const LP_ROUTES = ["/solver", "/lp"]

@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Facebook, Github, Instagram, Linkedin, Twitter } from "lucide-react"
+import { Github, Twitter } from "lucide-react"
 
 export function Footer() {
     return (
@@ -22,11 +22,11 @@ export function Footer() {
                         <span className="text-xl font-bold text-white tracking-tighter hover:text-[#F0B90B] transition-colors">uWu</span>
                     </div>
                     <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
-                        A decentralized liquidity protocol for the next generation of on-chain finance.
+                        The first truly decentralized P2P fiat-to-crypto ramp. Pay any UPI QR with stablecoins.
                     </p>
 
                     <div className="flex gap-4 mt-8">
-                        {[Facebook, Github, Instagram, Linkedin, Twitter].map((Icon, i) => (
+                        {[Github, Twitter].map((Icon, i) => (
                             <a key={i} href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 hover:text-white text-gray-400 transition-all">
                                 <Icon className="w-5 h-5" />
                             </a>
