@@ -7,7 +7,7 @@ import { useWallet } from "@/hooks/useWallet"
 
 export function Navbar() {
     const { isConnected, isFirstTimeUser } = useWallet()
-    
+
     // If connected, go to scan. Otherwise go to onboarding first
     const launchHref = isConnected ? '/scan' : '/onboarding'
     const launchText = isConnected ? 'Open App' : 'Launch App'
@@ -19,13 +19,13 @@ export function Navbar() {
             </Link>
 
             <div className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-400">
-                <Link href="#scan-pay" className="px-4 py-2 rounded-full border border-transparent hover:border-white/10 hover:bg-white/5 hover:text-white transition-all">
+                <Link href="/scan" className="px-4 py-2 rounded-full border border-transparent hover:border-white/10 hover:bg-white/5 hover:text-white transition-all">
                     Scan & Pay
                 </Link>
-                <Link href="#lp-stake" className="px-4 py-2 rounded-full border border-transparent hover:border-white/10 hover:bg-white/5 hover:text-white transition-all">
+                <Link href="/lp/register" className="px-4 py-2 rounded-full border border-transparent hover:border-white/10 hover:bg-white/5 hover:text-white transition-all">
                     Liquidity Providers
                 </Link>
-                <Link href="#dao" className="px-4 py-2 rounded-full border border-transparent hover:border-white/10 hover:bg-white/5 hover:text-white transition-all">
+                <Link href="/dao" className="px-4 py-2 rounded-full border border-transparent hover:border-white/10 hover:bg-white/5 hover:text-white transition-all">
                     DAO
                 </Link>
             </div>
