@@ -225,25 +225,8 @@ function DashboardContent() {
                         </div>
                     </Link>
 
-                    {/* LP Mode - Only show for LPs */}
-                    {stakeProfile?.isLP && (
-                        <Link
-                            href="/solver"
-                            className="flex flex-col gap-2 p-4 border border-border bg-card hover:border-warning hover:bg-surface-hover transition-all group"
-                        >
-                            <div className="flex justify-between items-start">
-                                <Users className="w-5 h-5 text-text-secondary group-hover:text-warning transition-colors" />
-                                <span className="text-[10px] text-text-muted opacity-0 group-hover:opacity-100 transition-opacity">LP</span>
-                            </div>
-                            <div>
-                                <span className="block text-sm font-bold group-hover:text-warning">LP TERMINAL</span>
-                                <span className="text-[10px] text-text-secondary lowercase">{">>"} fulfill_orders</span>
-                            </div>
-                        </Link>
-                    )}
-
-                    {/* DAO Validation - Only show for Gold+ tier users */}
-                    {stakeProfile && ['Gold', 'Diamond'].includes(stakeProfile.tier) && (
+                    {/* DAO Validation - Only show for validators (>= 100 USDC) */}
+                    {stakeProfile && stakeProfile.baseStake >= 100 && (
                         <Link
                             href="/dao"
                             className="flex flex-col gap-2 p-4 border border-border bg-card hover:border-green-500 hover:bg-surface-hover transition-all group"

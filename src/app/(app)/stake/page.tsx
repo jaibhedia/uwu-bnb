@@ -161,7 +161,7 @@ export default function StakePage() {
                         </div>
                         <Shield className="w-12 h-12 opacity-50" />
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4 mt-6">
                         <div>
                             <p className="text-sm opacity-80">Staked</p>
@@ -195,8 +195,8 @@ export default function StakePage() {
                                 <span>Progress to {stakeProfile.nextTier}</span>
                                 <span>{stakeProfile.progressToNextTier.toFixed(0)}%</span>
                             </div>
-                            <Progress 
-                                value={stakeProfile.progressToNextTier} 
+                            <Progress
+                                value={stakeProfile.progressToNextTier}
                                 className="bg-white/20"
                                 indicatorClassName="bg-white"
                             />
@@ -238,7 +238,7 @@ export default function StakePage() {
                                         Available: {balanceFormatted} USDC
                                     </p>
                                 </div>
-                                
+
                                 {/* Quick amounts */}
                                 <div className="flex gap-2">
                                     {[50, 200, 500, 2000].map(amount => (
@@ -338,7 +338,7 @@ export default function StakePage() {
                         <div className="flex justify-between">
                             <span className="text-text-secondary">LP Status</span>
                             <Badge variant={stakeProfile?.isLP ? 'success' : 'secondary'}>
-                                {stakeProfile?.isLP ? 'Active LP' : 'Not LP'}
+                                {stakeProfile?.isLP ? 'Active Validator' : 'Not Validator'}
                             </Badge>
                         </div>
                     </div>
@@ -356,11 +356,10 @@ export default function StakePage() {
                             {TIER_CONFIG.filter(tier => tier.name !== 'Starter').map((tier) => (
                                 <div
                                     key={tier.name}
-                                    className={`border rounded-lg p-4 ${
-                                        tier.name === currentTier 
-                                            ? 'border-brand bg-brand/10' 
+                                    className={`border rounded-lg p-4 ${tier.name === currentTier
+                                            ? 'border-brand bg-brand/10'
                                             : 'border-border'
-                                    }`}
+                                        }`}
                                 >
                                     <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center gap-2">

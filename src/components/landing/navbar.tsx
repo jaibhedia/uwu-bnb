@@ -19,7 +19,7 @@ export function Navbar() {
             </Link>
 
             <div className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-400">
-                <Link href="/scan" className="px-4 py-2 rounded-full border border-transparent hover:border-white/10 hover:bg-white/5 hover:text-white transition-all">
+                <Link href={isConnected ? '/scan' : '/onboarding'} className="px-4 py-2 rounded-full border border-transparent hover:border-white/10 hover:bg-white/5 hover:text-white transition-all">
                     Scan & Pay
                 </Link>
                 <Link href="/lp/register" className="px-4 py-2 rounded-full border border-transparent hover:border-white/10 hover:bg-white/5 hover:text-white transition-all">

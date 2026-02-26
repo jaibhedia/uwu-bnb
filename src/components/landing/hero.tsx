@@ -165,7 +165,7 @@ export function Hero() {
                                 </div>
                             </motion.div>
 
-                            <Link href="/scan" className="block w-full py-4 bg-gradient-to-r from-white to-gray-400 rounded-xl text-black font-bold shadow-lg shadow-white/20 transition-colors text-center hover:shadow-white/30">
+                            <Link href="/onboarding" className="block w-full py-4 bg-gradient-to-r from-white to-gray-400 rounded-xl text-black font-bold shadow-lg shadow-white/20 transition-colors text-center hover:shadow-white/30">
                                 Pay
                             </Link>
                         </div>

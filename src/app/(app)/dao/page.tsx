@@ -5,7 +5,7 @@ import Link from "next/link"
 import {
     ChevronLeft, Shield, Clock, CheckCircle, XCircle, AlertTriangle,
     Award, Eye, ThumbsUp, ThumbsDown, Loader2, Coins, DollarSign,
-    ImageIcon, RefreshCw, Flag, ArrowRight, Zap
+    ImageIcon, RefreshCw, Flag, ArrowRight, Zap, Check
 } from "lucide-react"
 import { useWallet } from "@/hooks/useWallet"
 import { useStaking } from "@/hooks/useStaking"
@@ -65,7 +65,7 @@ interface ValidationConfig {
 
 export default function ValidatorDashboard() {
     const { isConnected, address } = useWallet()
-    const { stakeProfile } = useStaking()
+    const { stakeProfile, fetchStakeProfile, isLoading: isStakingLoading } = useStaking()
 
     const [mounted, setMounted] = useState(false)
     const [validations, setValidations] = useState<ValidationTask[]>([])
@@ -83,12 +83,20 @@ export default function ValidatorDashboard() {
     const TEST_VALIDATORS = (process.env.NEXT_PUBLIC_DAO_VALIDATORS || '').split(',').map(a => a.trim().toLowerCase()).filter(Boolean)
     const isTestValidator = address ? TEST_VALIDATORS.includes(address.toLowerCase()) : false
 
-    // Check if user qualifies as validator (Gold+ tier OR whitelisted validator)
-    const isGoldPlus = isTestValidator || (stakeProfile && (stakeProfile.tier === 'Gold' || stakeProfile.tier === 'Diamond'))
+    // Check if user qualifies as validator (>=100 USDC stake OR whitelisted validator)
+    const hasValidatorStake = isTestValidator || (stakeProfile && stakeProfile.baseStake >= 100)
+
+    const [isChecking, setIsChecking] = useState(true)
 
     useEffect(() => {
         setMounted(true)
-    }, [])
+        if (address) {
+            setIsChecking(true)
+            fetchStakeProfile().finally(() => setIsChecking(false))
+        } else {
+            setIsChecking(false)
+        }
+    }, [address, fetchStakeProfile])
 
     // Fetch validations
     const fetchValidations = useCallback(async () => {
@@ -115,13 +123,13 @@ export default function ValidatorDashboard() {
     }, [address, showResolved])
 
     useEffect(() => {
-        if (address && isGoldPlus) {
+        if (address && hasValidatorStake) {
             setShowResolved(true)
             fetchValidations()
             const interval = setInterval(fetchValidations, 10000)
             return () => clearInterval(interval)
         }
-    }, [address, isGoldPlus, fetchValidations])
+    }, [address, hasValidatorStake, fetchValidations])
 
     // Fetch full evidence for selected task
     const loadFullEvidence = async (taskId: string) => {
@@ -228,34 +236,34 @@ export default function ValidatorDashboard() {
     return (
         <div className="min-h-screen bg-background pb-24">
             {/* Header */}
-            <header className="border-b border-border p-4 sticky top-0 bg-background/80 backdrop-blur-md z-10">
+            <header className="border-b border-border p-4 sticky top-0 bg-background/90 backdrop-blur-md z-10">
                 <div className="max-w-4xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Link href="/dashboard" className="text-text-secondary hover:text-white">
-                            <ChevronLeft size={20} />
+                    <div className="flex items-start gap-4">
+                        <Link href="/dashboard" className="text-text-secondary hover:text-white mt-1 shrink-0 transition-colors">
+                            <ChevronLeft size={16} />
                         </Link>
-                        <div>
-                            <h1 className="text-lg font-bold text-white font-mono uppercase flex items-center gap-2">
-                                <Shield className="w-5 h-5 text-brand" />
-                                Validate
-                            </h1>
-                            <p className="text-[10px] text-text-secondary uppercase tracking-wider">
-                                Review payments &bull; Earn $0.05/review
+                        <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-2">
+                                <Shield className="w-[18px] h-[18px] text-[#22c55e]" />
+                                <h1 className="text-[15px] font-bold text-white uppercase tracking-[0.1em]">Validate</h1>
+                            </div>
+                            <p className="text-[9px] text-[#8b8b9e] tracking-[0.15em] font-mono leading-tight">
+                                REVIEW PAYMENTS &bull; EARN $0.05/REVIEW
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
+
+                    <div className="flex items-center gap-4 mt-1">
                         {profile && (
-                            <Badge className="bg-green-500/20 text-green-400 font-mono">
-                                <DollarSign className="w-3 h-3 mr-0.5" />
-                                {profile.totalEarned.toFixed(2)}
-                            </Badge>
+                            <div className="px-2 py-0.5 rounded-[4px] bg-[#0f2e1b] text-[#22c55e] font-mono text-[10px] flex items-center gap-1 font-bold tracking-[0.05em] border border-[#1a4a2a]">
+                                $ {(profile.totalEarned || 0).toFixed(2)}
+                            </div>
                         )}
                         <button
                             onClick={fetchValidations}
-                            className="p-2 text-text-secondary hover:text-white transition-colors"
+                            className="text-[#8b8b9e] hover:text-white transition-colors"
                         >
-                            <RefreshCw className="w-4 h-4" />
+                            <RefreshCw size={14} className={isLoading ? "animate-spin" : ""} />
                         </button>
                     </div>
                 </div>
@@ -272,16 +280,24 @@ export default function ValidatorDashboard() {
                     </div>
                 )}
 
-                {/* Not Gold+ */}
-                {isConnected && !isGoldPlus && (
+                {/* Loading State */}
+                {isConnected && isChecking && (
+                    <div className="bg-[#111114] py-12 px-6 text-center rounded-sm flex flex-col items-center">
+                        <Loader2 className="w-8 h-8 animate-spin text-[#22c55e] mb-2" />
+                        <p className="text-[12px] text-[#8b8b9e] font-mono tracking-wider">Verifying stakes...</p>
+                    </div>
+                )}
+
+                {/* Not Validator */}
+                {isConnected && !hasValidatorStake && !isChecking && (
                     <div className="bg-surface border border-border p-8 text-center">
                         <Award className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
-                        <h2 className="text-xl font-bold text-text-primary mb-2">Validator dashboard — Gold+ required</h2>
+                        <h2 className="text-xl font-bold text-text-primary mb-2">Validator dashboard — $100 USDC required</h2>
                         <p className="text-text-secondary mb-2">
-                            This is where validators vote on payment proofs (approve/flag). It is separate from Scan &amp; Pay.
+                            This is where validators vote on payment proofs (approve/flag) to secure the protocol.
                         </p>
                         <p className="text-text-secondary mb-2">
-                            Stake &ge;$500 USDC (Gold tier) to become a validator and earn $0.05 per review.
+                            Stake &ge;$100 USDC to become a validator and earn $0.05 per review.
                         </p>
                         <p className="text-text-secondary text-sm mb-6">
                             Your tier: <span className="text-brand font-bold">{stakeProfile?.tier || 'None'}</span>
@@ -299,44 +315,38 @@ export default function ValidatorDashboard() {
                 )}
 
                 {/* Validator Dashboard */}
-                {isConnected && isGoldPlus && (
+                {isConnected && hasValidatorStake && (
                     <>
-                        <p className="text-text-secondary text-sm mb-4">
-                            Vote Approve or Flag on each payment proof. Majority wins; you earn $0.05 USDC per review. This is not Scan &amp; Pay — use the Scan tab for that.
-                        </p>
                         {/* Tabs */}
-                        <div className="flex gap-2 mb-6">
+                        <div className="flex mb-6 text-[13px] font-bold tracking-wide">
                             <button
                                 onClick={() => setTab('profile')}
-                                className={`flex-1 py-2 text-sm font-medium border transition-colors ${
-                                    tab === 'profile'
-                                        ? 'bg-brand text-white border-brand'
-                                        : 'bg-surface text-text-secondary border-border hover:text-text-primary'
-                                }`}
+                                className={`flex-1 py-3 flex items-center justify-center gap-2 transition-colors ${tab === 'profile'
+                                    ? 'bg-[#22c55e] text-black'
+                                    : 'bg-[#111114] text-[#8b8b9e] hover:text-white'
+                                    }`}
                             >
-                                <Shield className="w-4 h-4 inline mr-1" />
+                                <Shield className="w-[14px] h-[14px]" />
                                 DAO Profile
                             </button>
                             <button
                                 onClick={() => { setTab('history'); setShowResolved(true); fetchValidations() }}
-                                className={`flex-1 py-2 text-sm font-medium border transition-colors ${
-                                    tab === 'history'
-                                        ? 'bg-brand text-white border-brand'
-                                        : 'bg-surface text-text-secondary border-border hover:text-text-primary'
-                                }`}
+                                className={`flex-1 py-3 flex items-center justify-center gap-2 transition-colors ${tab === 'history'
+                                    ? 'bg-[#22c55e] text-black'
+                                    : 'bg-[#111114] text-[#8b8b9e] hover:text-white'
+                                    }`}
                             >
-                                <Clock className="w-4 h-4 inline mr-1" />
+                                <Clock className="w-[14px] h-[14px]" />
                                 History
                             </button>
                             <button
                                 onClick={() => setTab('wallet')}
-                                className={`flex-1 py-2 text-sm font-medium border transition-colors ${
-                                    tab === 'wallet'
-                                        ? 'bg-brand text-white border-brand'
-                                        : 'bg-surface text-text-secondary border-border hover:text-text-primary'
-                                }`}
+                                className={`flex-1 py-3 flex items-center justify-center gap-2 transition-colors ${tab === 'wallet'
+                                    ? 'bg-[#22c55e] text-black'
+                                    : 'bg-[#111114] text-[#8b8b9e] hover:text-white'
+                                    }`}
                             >
-                                <Coins className="w-4 h-4 inline mr-1" />
+                                <Coins className="w-[14px] h-[14px]" />
                                 Wallet
                             </button>
                         </div>
@@ -391,7 +401,7 @@ export default function ValidatorDashboard() {
                                     <div className="space-y-3 text-sm text-text-secondary">
                                         <div className="flex gap-3">
                                             <div className="w-6 h-6 rounded-full bg-brand/20 flex items-center justify-center text-brand text-xs font-bold shrink-0">1</div>
-                                            <div>LP submits fiat payment proof &rarr; order enters <span className="text-brand">verifying</span> state</div>
+                                            <div>Payment proof is submitted &rarr; order enters <span className="text-brand">verifying</span> state</div>
                                         </div>
                                         <div className="flex gap-3">
                                             <div className="w-6 h-6 rounded-full bg-brand/20 flex items-center justify-center text-brand text-xs font-bold shrink-0">2</div>
@@ -399,7 +409,7 @@ export default function ValidatorDashboard() {
                                         </div>
                                         <div className="flex gap-3">
                                             <div className="w-6 h-6 rounded-full bg-brand/20 flex items-center justify-center text-brand text-xs font-bold shrink-0">3</div>
-                                            <div>Majority approve &rarr; LP gets paid. Majority flag &rarr; escalated to admin.</div>
+                                            <div>Majority approve &rarr; payment released. Majority flag &rarr; escalated to admin.</div>
                                         </div>
                                         <div className="flex gap-3">
                                             <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 text-xs font-bold shrink-0">$</div>
@@ -419,10 +429,12 @@ export default function ValidatorDashboard() {
                                         <p className="text-text-secondary text-sm">Loading history...</p>
                                     </div>
                                 ) : validations.length === 0 ? (
-                                    <div className="bg-surface border border-border p-8 text-center">
-                                        <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                                        <h3 className="text-lg font-bold text-text-primary mb-2">No History Yet</h3>
-                                        <p className="text-text-secondary text-sm">
+                                    <div className="bg-[#111114] py-12 px-6 text-center rounded-sm">
+                                        <div className="w-12 h-12 rounded-full border border-[#22c55e] flex items-center justify-center mx-auto mb-4">
+                                            <Check className="w-6 h-6 text-[#22c55e]" strokeWidth={3} />
+                                        </div>
+                                        <h3 className="text-[15px] font-bold text-white tracking-wide mb-2">No History Yet</h3>
+                                        <p className="text-[12px] text-[#8b8b9e] font-mono tracking-wider">
                                             Your reviewed validations will appear here.
                                         </p>
                                     </div>
@@ -521,8 +533,8 @@ export default function ValidatorDashboard() {
                                         <span className="text-text-primary font-mono text-xs">{address?.slice(0, 10)}...{address?.slice(-6)}</span>
                                     </div>
                                     <div className="flex justify-between items-center py-2 border-b border-border">
-                                        <span className="text-text-secondary text-sm">Tier</span>
-                                        <span className="text-brand font-bold">{stakeProfile?.tier || 'Gold'}</span>
+                                        <span className="text-text-secondary text-sm">Valid Validator Stake</span>
+                                        <span className="text-brand font-bold">Yes (&ge;$100)</span>
                                     </div>
                                     <div className="flex justify-between items-center py-2">
                                         <span className="text-text-secondary text-sm">Reward Rate</span>
@@ -604,11 +616,11 @@ export default function ValidatorDashboard() {
                                 {(fullEvidence?.evidence.lpScreenshot || selectedTask.evidence.lpScreenshot) && (
                                     <div>
                                         <div className="text-xs text-text-secondary mb-1 flex items-center gap-1">
-                                            <ImageIcon className="w-3 h-3" /> LP Payment Proof
+                                            <ImageIcon className="w-3 h-3" /> Payment Proof
                                         </div>
                                         <img
                                             src={fullEvidence?.evidence.lpScreenshot || selectedTask.evidence.lpScreenshot}
-                                            alt="LP payment proof"
+                                            alt="Payment proof"
                                             className="w-full rounded-lg border border-border max-h-48 object-contain bg-black"
                                         />
                                     </div>
@@ -616,11 +628,11 @@ export default function ValidatorDashboard() {
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                     <div className="bg-background border border-border rounded p-2">
                                         <div className="text-text-secondary">Buyer</div>
-                                        <div className="text-text-primary font-mono truncate">{selectedTask.evidence.userAddress.slice(0,8)}...{selectedTask.evidence.userAddress.slice(-4)}</div>
+                                        <div className="text-text-primary font-mono truncate">{selectedTask.evidence.userAddress.slice(0, 8)}...{selectedTask.evidence.userAddress.slice(-4)}</div>
                                     </div>
                                     <div className="bg-background border border-border rounded p-2">
-                                        <div className="text-text-secondary">LP</div>
-                                        <div className="text-text-primary font-mono truncate">{selectedTask.evidence.lpAddress.slice(0,8)}...{selectedTask.evidence.lpAddress.slice(-4)}</div>
+                                        <div className="text-text-secondary">Seller</div>
+                                        <div className="text-text-primary font-mono truncate">{selectedTask.evidence.lpAddress.slice(0, 8)}...{selectedTask.evidence.lpAddress.slice(-4)}</div>
                                     </div>
                                 </div>
                             </div>

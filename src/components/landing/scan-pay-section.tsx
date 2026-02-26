@@ -9,25 +9,25 @@ const FEATURES = [
         icon: ArrowDownToLine,
         title: "Deposit USDC",
         description: "Transfer USDC from your external wallet to your uWu wallet on BNB",
-        href: "/wallet?action=deposit"
+        href: "/onboarding"
     },
     {
         icon: ArrowUpFromLine,
         title: "Withdraw USDC",
         description: "Send USDC from your uWu wallet to any external wallet address",
-        href: "/wallet?action=withdraw"
+        href: "/onboarding"
     },
     {
         icon: Eye,
         title: "Wallet View",
         description: "View your balance, transaction history, and wallet details on BNB",
-        href: "/wallet"
+        href: "/onboarding"
     },
     {
         icon: QrCode,
         title: "Scan & Pay",
         description: "Scan any UPI QR code, place an order, and get matched to an LP instantly",
-        href: "/scan"
+        href: "/onboarding"
     }
 ]
 
@@ -154,7 +154,7 @@ export function ScanPaySection() {
                     className="text-center mt-20"
                 >
                     <Link
-                        href="/scan"
+                        href="/onboarding"
                         className="group relative inline-flex items-center gap-3 px-8 py-3 bg-white text-black font-semibold rounded overflow-hidden hover:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-shadow"
                     >
                         <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-[#F0B90B]/20 to-transparent" />
