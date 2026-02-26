@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import Link from "next/link"
 import {
     ChevronLeft, Shield, Clock, CheckCircle, XCircle, AlertTriangle,
@@ -86,17 +86,47 @@ export default function ValidatorDashboard() {
     // Check if user qualifies as validator (>=100 USDC stake OR whitelisted validator)
     const hasValidatorStake = isTestValidator || (stakeProfile && stakeProfile.baseStake >= 100)
 
-    const [isChecking, setIsChecking] = useState(true)
+    // isChecking = true until stakeProfile is loaded from chain
+    const [hasFetched, setHasFetched] = useState(false)
+    const isChecking = !hasFetched && !!address
 
     useEffect(() => {
         setMounted(true)
         if (address) {
-            setIsChecking(true)
-            fetchStakeProfile().finally(() => setIsChecking(false))
-        } else {
-            setIsChecking(false)
+            setHasFetched(false)
+            fetchStakeProfile().finally(() => setHasFetched(true))
         }
     }, [address, fetchStakeProfile])
+
+    // Auto-register as DAO validator if user has sufficient on-chain stake but isn't registered
+    const autoRegisterAttempted = useRef(false)
+    const ensureRegistered = useCallback(async () => {
+        if (!address || !stakeProfile || stakeProfile.baseStake < 100) return
+        if (autoRegisterAttempted.current) return
+        autoRegisterAttempted.current = true
+
+        try {
+            // Check if already registered
+            const checkRes = await fetch(`/api/dao/register?address=${address}`)
+            const checkData = await checkRes.json()
+
+            if (checkData.success && !checkData.registered) {
+                // Auto-register with their on-chain stake
+                console.log(`[DAO] Auto-registering validator ${address} with $${stakeProfile.baseStake} stake`)
+                const regRes = await fetch('/api/dao/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address, stakeAmount: stakeProfile.baseStake })
+                })
+                const regData = await regRes.json()
+                if (regData.success) {
+                    console.log(`[DAO] Auto-registered successfully`)
+                }
+            }
+        } catch (err) {
+            console.error('[DAO] Auto-register check failed:', err)
+        }
+    }, [address, stakeProfile])
 
     // Fetch validations
     const fetchValidations = useCallback(async () => {
@@ -124,12 +154,15 @@ export default function ValidatorDashboard() {
 
     useEffect(() => {
         if (address && hasValidatorStake) {
-            setShowResolved(true)
-            fetchValidations()
+            // Ensure registered first, then fetch validations
+            ensureRegistered().then(() => {
+                setShowResolved(true)
+                fetchValidations()
+            })
             const interval = setInterval(fetchValidations, 10000)
             return () => clearInterval(interval)
         }
-    }, [address, hasValidatorStake, fetchValidations])
+    }, [address, hasValidatorStake, ensureRegistered, fetchValidations])
 
     // Fetch full evidence for selected task
     const loadFullEvidence = async (taskId: string) => {

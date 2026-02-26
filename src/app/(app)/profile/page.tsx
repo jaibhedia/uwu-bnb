@@ -29,7 +29,7 @@ import { WalletConnect } from "@/components/app/wallet-connect"
 export default function ProfilePage() {
     const router = useRouter()
     const { isConnected, address, balance, displayName, disconnect } = useWallet()
-    const { stakeProfile, isLoading: stakeLoading, fetchStakeProfile } = useStaking()
+    const { stakeProfile, isLoading: stakeLoading, fetchStakeProfile, getTierConfig } = useStaking()
     const { trustData, isLoading: trustLoading } = useTrustScore()
     const { limitData, isLoading: limitsLoading } = useUserLimits(address || null)
     const [mounted, setMounted] = useState(false)
@@ -230,30 +230,71 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                {/* Validator Status */}
+                {/* LP Status */}
                 {stakeProfile?.isLP && (
                     <div className="bg-green-500/10 border border-green-500/20 p-3 flex items-center gap-3">
                         <Shield className="w-5 h-5 text-green-500" />
                         <div className="flex-1">
-                            <div className="text-sm font-medium text-green-400">Active Validator</div>
-                            <div className="text-xs text-green-500/70">Securing protocol and earning rewards</div>
+                            <div className="text-sm font-medium text-green-400">Active LP</div>
+                            <div className="text-xs text-green-500/70">Providing liquidity and earning rewards</div>
                         </div>
                     </div>
                 )}
             </div>
 
+            {/* Order Limits */}
+            <div className="bg-surface border border-border p-6 mb-6">
+                <div className="flex items-center gap-2 mb-4">
+                    <Shield className="w-5 h-5 text-brand" />
+                    <h2 className="font-bold text-text-primary uppercase">Current Limits</h2>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="bg-background/50 rounded-sm p-3">
+                        <div className="text-xs text-text-secondary uppercase mb-1">Max Order</div>
+                        <div className="text-lg font-bold text-text-primary">
+                            ${stakeProfile ? getTierConfig(stakeProfile.tier).maxOrder : 150} USDC
+                        </div>
+                    </div>
+                    <div className="bg-background/50 rounded-sm p-3">
+                        <div className="text-xs text-text-secondary uppercase mb-1">Completed</div>
+                        <div className="text-lg font-bold text-text-primary">
+                            {stakeProfile?.completedTrades || 0} trades
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-between text-sm py-2">
+                    <span className="text-text-secondary">Account Age</span>
+                    <span className="text-text-primary font-medium flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-text-secondary" />
+                        {stakeProfile?.memberSince
+                            ? `${Math.floor((Date.now() - stakeProfile.memberSince) / (1000 * 60 * 60 * 24))} days`
+                            : 'New'
+                        }
+                    </span>
+                </div>
+            </div>
+
             {/* Quick Actions */}
-            <div className="flex flex-col gap-4 mb-6">
+            <div className="grid grid-cols-2 gap-4 mb-6">
                 <Link
                     href="/orders"
-                    className="bg-surface border border-border p-4 text-center hover:border-brand/50 transition-colors flex items-center justify-center gap-3"
+                    className="bg-surface border border-border p-4 text-center hover:border-brand/50 transition-colors"
                 >
-                    <History className="w-5 h-5 text-brand" />
+                    <History className="w-6 h-6 text-brand mx-auto mb-2" />
                     <div className="text-sm font-medium text-text-primary">Order History</div>
                 </Link>
                 <Link
+                    href="/dao"
+                    className="bg-surface border border-border p-4 text-center hover:border-brand/50 transition-colors"
+                >
+                    <Award className="w-6 h-6 text-brand mx-auto mb-2" />
+                    <div className="text-sm font-medium text-text-primary">Validate</div>
+                </Link>
+                <Link
                     href="/contracts"
-                    className="bg-surface border border-border p-4 text-center hover:border-brand/50 transition-colors flex items-center justify-center gap-3"
+                    className="col-span-2 bg-surface border border-border p-4 text-center hover:border-brand/50 transition-colors flex items-center justify-center gap-2"
                 >
                     <Wallet className="w-5 h-5 text-brand" />
                     <div className="text-sm font-medium text-text-primary">Contracts & Fee collector</div>

@@ -338,7 +338,7 @@ export default function StakePage() {
                         <div className="flex justify-between">
                             <span className="text-text-secondary">LP Status</span>
                             <Badge variant={stakeProfile?.isLP ? 'success' : 'secondary'}>
-                                {stakeProfile?.isLP ? 'Active Validator' : 'Not Validator'}
+                                {stakeProfile?.isLP ? 'Active LP' : 'Not LP'}
                             </Badge>
                         </div>
                     </div>
@@ -357,8 +357,8 @@ export default function StakePage() {
                                 <div
                                     key={tier.name}
                                     className={`border rounded-lg p-4 ${tier.name === currentTier
-                                            ? 'border-brand bg-brand/10'
-                                            : 'border-border'
+                                        ? 'border-brand bg-brand/10'
+                                        : 'border-border'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between mb-2">

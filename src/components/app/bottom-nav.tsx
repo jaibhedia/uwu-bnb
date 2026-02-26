@@ -2,14 +2,17 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { User, Home, Shield, Wallet, QrCode } from "lucide-react"
+import { User, Home, Shield, Wallet, QrCode, Receipt } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 /**
- * Bottom navigation: Home, Validate, Profile only.
+ * Bottom navigation: Home, Wallet, Scan, Validate/Orders, Profile.
+ * LP & Scan pages show Orders tab instead of Validate.
  */
 export function BottomNav() {
     const pathname = usePathname()
+
+    const isOnDAO = pathname === "/dao"
 
     return (
         <div className="fixed bottom-0 left-0 right-0 bg-[#0a0a0f] border-t border-[#1a1a24] safe-area-bottom pb-2">
@@ -50,18 +53,33 @@ export function BottomNav() {
                     <span className="text-[10px] font-medium text-[#3b82f6] mt-1">Scan</span>
                 </div>
 
-                <Link
-                    href="/dao"
-                    className={cn(
-                        "flex flex-col items-center px-3 py-2 rounded-lg text-xs font-medium transition-colors",
-                        pathname === "/dao"
-                            ? "text-[#22c55e]"
-                            : "text-[#8b8b9e] hover:text-white"
-                    )}
-                >
-                    <Shield className="w-5 h-5 mb-1" />
-                    Validate
-                </Link>
+                {!isOnDAO ? (
+                    <Link
+                        href="/orders"
+                        className={cn(
+                            "flex flex-col items-center px-3 py-2 rounded-lg text-xs font-medium transition-colors",
+                            pathname === "/orders"
+                                ? "text-[#3b82f6]"
+                                : "text-[#8b8b9e] hover:text-white"
+                        )}
+                    >
+                        <Receipt className="w-5 h-5 mb-1" />
+                        Orders
+                    </Link>
+                ) : (
+                    <Link
+                        href="/dao"
+                        className={cn(
+                            "flex flex-col items-center px-3 py-2 rounded-lg text-xs font-medium transition-colors",
+                            pathname === "/dao"
+                                ? "text-[#22c55e]"
+                                : "text-[#8b8b9e] hover:text-white"
+                        )}
+                    >
+                        <Shield className="w-5 h-5 mb-1" />
+                        Validate
+                    </Link>
+                )}
 
                 <Link
                     href="/profile"
