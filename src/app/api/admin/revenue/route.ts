@@ -25,7 +25,7 @@ const CORE_TEAM = (
     process.env.NEXT_PUBLIC_CORE_TEAM || ""
 ).split(',').map(a => a.trim().toLowerCase()).filter(Boolean)
 
-const FEE_COLLECTOR = process.env.NEXT_PUBLIC_FEE_COLLECTOR || "0x3bfE354c1A7EC689B8df2682aDbAaF032DD56E61"
+const FEE_COLLECTOR = process.env.NEXT_PUBLIC_FEE_COLLECTOR || "0xC7d7722a69bE1301A558418b6Da0aceEe4856857"
 const PLATFORM_FEE_BPS = 50 // 0.5% — matches contract's platformFeeBps
 const VALIDATOR_REWARD = 0.05 // $0.05 per review
 const SMALL_ORDER_FEE = 0.125 // flat fee for orders < $10

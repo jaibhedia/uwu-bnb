@@ -22,7 +22,7 @@ import {
 const CORE_TEAM = (
     process.env.NEXT_PUBLIC_CORE_TEAM ||
     process.env.NEXT_PUBLIC_DAO_ADMINS ||
-    "0x29E83cDc91a0E06A8180e193DF23CA3f5093017f"
+    "0x8889A923bc9EA775b387eAd56e21DCD351Cad618"
 ).split(',').map(a => a.trim().toLowerCase())
 
 function isAdmin(address: string): boolean {

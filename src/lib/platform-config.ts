@@ -92,7 +92,7 @@ export const PLATFORM_CONFIG = {
         smallOrderFee: 0.125,            // $0.125 flat for small orders
         smallOrderThreshold: 10,         // Orders under $10
         lpRewardShare: 0.5,              // LP gets 50% of fee as bonus
-        feeCollector: process.env.NEXT_PUBLIC_FEE_COLLECTOR || '0x3bfE354c1A7EC689B8df2682aDbAaF032DD56E61',
+        feeCollector: process.env.NEXT_PUBLIC_FEE_COLLECTOR || '0xC7d7722a69bE1301A558418b6Da0aceEe4856857',
     },
 
     // Order limits
