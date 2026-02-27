@@ -409,10 +409,6 @@ export async function PATCH(request: NextRequest) {
                     )
                 }
 
-                // Enter verifying state — DAO validators will review
-                order.status = "verifying"
-                order.paymentSentAt = Date.now()
-
                 if (lpPaymentProof) {
                     // Upload LP payment proof to IPFS
                     const ipfsProof = await uploadBase64ToIPFS(lpPaymentProof, `${orderId}_lp_proof`)
@@ -422,18 +418,29 @@ export async function PATCH(request: NextRequest) {
                     }
                 }
 
-                // Create validation task for DAO review
-                await createValidationTask({
-                    id: order.id,
-                    qrImage: order.qrImage,
-                    userAddress: order.userAddress,
-                    lpPaymentProof: order.lpPaymentProof,
-                    solverAddress: order.solverAddress,
-                    amountUsdc: order.amountUsdc,
-                    amountFiat: order.amountFiat || 0,
-                    fiatCurrency: order.fiatCurrency || 'INR',
-                    paymentMethod: order.paymentMethod || 'UPI',
-                })
+                if (process.env.NEXT_PUBLIC_SIMULATE_DAO_VERIFICATION === "true") {
+                    console.log(`[Orders] Simulating DAO verification for order ${order.id}. Marking as completed.`)
+                    order.status = "completed"
+                    order.paymentSentAt = Date.now()
+                    order.completedAt = Date.now()
+                } else {
+                    // Enter verifying state — DAO validators will review
+                    order.status = "verifying"
+                    order.paymentSentAt = Date.now()
+
+                    // Create validation task for DAO review
+                    await createValidationTask({
+                        id: order.id,
+                        qrImage: order.qrImage,
+                        userAddress: order.userAddress,
+                        lpPaymentProof: order.lpPaymentProof,
+                        solverAddress: order.solverAddress,
+                        amountUsdc: order.amountUsdc,
+                        amountFiat: order.amountFiat || 0,
+                        fiatCurrency: order.fiatCurrency || 'INR',
+                        paymentMethod: order.paymentMethod || 'UPI',
+                    })
+                }
                 break
 
             case "complete":
